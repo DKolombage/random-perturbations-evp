@@ -7,8 +7,7 @@
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 ```
 
-This repository provides code for the experiments of the paper "Offline-online approximation of multiscale eigenvalue problems with random defects" by Dilini Kolombage and Barbara Verfürth. The code is based on the module `gridlod` developed by Fredrik Hellman and Tim Keil, and `random_perturbations` that has been developed by Barbara extend the PGLOD with the offline-online strategy for random defects and were written by Barbara Verfürth.
-This repository provides code for the experiments of the paper "Offline-online approximation of multiscale eigenvalue problems with random defects" by Dilini Kolombage and Barbara Verfürth. The code is based on the module `gridlod` developed by Fredrik Hellman and Tim Keil, and `random_perturbations` that has been developed by Barbara Verfürth. The module `gridlod` consists of code for PGLOD and is provided as a submodule. The subfolder `random_perturbations` extend the PGLOD with the offline-online strategy for random defects for the source problem. The subfolder `eigen_problem` extends this offline-online strategy for the eigenvalue problem with random defects. It further contains the code for an alternate online-offline strategy. The files in the `eigen_problem` were written by Dilini Kolombage.
+This repository provides code for the experiments of the paper "Offline-online approximation of multiscale eigenvalue problems with random defects" by Dilini Kolombage and Barbara Verfürth. The code is based on the module `gridlod` developed by Fredrik Hellman and Tim Keil, and `random_perturbations` by Barbara Verfürth. The The subfolder `gridlod` consists of code for PGLOD. The subfolder `random_perturbations` extend the PGLOD with the offline-online strategy for random defects for the source problem. The subfolder `eigen_problem` extends this offline-online strategy for the eigenvalue problem with random defects. It further contains the code for an alternate online-offline strategy. The files in the `eigen_problem` were written by Dilini Kolombage.
 
 ## Setup
 
@@ -70,7 +69,7 @@ for the experiments of Section 5.1.1;
 python3 E2_OLOD_2D_RC.py
 ```
 and
-```python3 E3_OLOD_2D_RE.py
+python3 E3_OLOD_2D_RE.py
 ```
 for the experiments of Section 5.1.2;
 
