@@ -61,35 +61,30 @@ Disclaimer! The re-generation of these experiments may take quite a while. A qui
 ### Generating the data
 To reproduce the data of the experiments run
 
-    ```
-    python3 E1_OLOD_1D_RC.py
-    ```
+```
+python3 E1_OLOD_1D_RC.py
+```
 for the experiments of Section 5.1.1;
 
-    ```
-    python3 E2_OLOD_2D_RC.py
-    ```
+```
+python3 E2_OLOD_2D_RC.py
+```
 and
-    ```python3 E3_OLOD_2D_RE.py
-    ```
+```python3 E3_OLOD_2D_RE.py
+```
 for the experiments of Section 5.1.2;
 
-    ```
-    python3 E4_1D_Check_s_val.py
-    ```
+```
+python3 E4_1D_Check_s_val.py
+```
     and
-    ```
-    python3 E5_2D_Check_s_val.py
-    ```
+```
+python3 E5_2D_Check_s_val.py
+```
 for the experiments of Section 5.2. 
-The notebooks with already stored data for visualization are named with same corresponding name as given above.
 
 ### Visualization
-To reproduce the figures with the errors in Section 6 (Figures 6.1, 6.2, 6.4, and 6.5), run
-
-```
-python3 plot_results.py
-```
+All dta from the experiments are available at the `All_Data` folder as .mat-files and can be easily visualize without generating the data. These visualizations are shownen in jupiter notebooks and each file is named by the same corresponding file name as described above.
 
 Apart from the visualization of the errors, you can also reproduce the coefficient visualizations from the paper (Figures 1 and 2). These are given as a part of the notebooks 
 ``E2_OLOD_2D_RC.ipynb`` and ``E3_OLOD_2D_RE.py``
