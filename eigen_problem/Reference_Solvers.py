@@ -4,7 +4,7 @@ import scipy.sparse.linalg as ln
 from gridlod.world import World
 from gridlod import util, fem, lod, interp, world
 import sys
-sys.path.insert(0, '/home/kolombag/Documents/rand_perturbations_evp/random-perturbations-evp/random_perturbations')
+sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
 import build_coefficient, lod_periodic
 import math
 

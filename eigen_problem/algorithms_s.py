@@ -3,7 +3,7 @@ import time
 
 from gridlod import interp, lod
 import sys
-sys.path.insert(0, '/home/kolombag/Documents/rand_perturbations_evp/random-perturbations-evp/random_perturbations')
+sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
 import build_coefficient, lod_periodic, indicator
 
 # The following code is adapted from the sum constraint one algorithm from `algorithms.py` file in `random_perturbations` folder for the alternate method with sum constrain-s.

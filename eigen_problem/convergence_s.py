@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from mpltools import annotation
 from offline_online_alg_s import *
 
-
 def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, model, solver , reference_solver="FEM", save_files = True, root=None):
 
     Niter = 3
