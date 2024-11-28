@@ -7,27 +7,21 @@
 # License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
 ```
 
-This repository provides code for the experiments of the paper "Offline-online approximation of multiscale eigenvalue problems with random defects" by Dilini Kolombage and Barbara Verfürth. The code is based on the module `gridlod` developed by Fredrik Hellman and Tim Keil, and `random_perturbations` by Barbara Verfürth. The subfolder `gridlod` consists of code for PGLOD. The subfolder `random_perturbations` extend the PGLOD with the offline-online strategy for random defects for the source problem. The subfolder `eigen_problem` extends this offline-online strategy for the eigenvalue problem with random defects. It further contains the code for an alternate online-offline strategy. The files in the `eigen_problem` were written by Dilini Kolombage.
+This repository provides code for the experiments of the paper "Offline-online approximation of multiscale eigenvalue problems with random defects" by Dilini Kolombage and Barbara Verfürth. The code is based on the module `gridlod` developed by Fredrik Hellman and Tim Keil (https://github.com/fredrikhellman/gridlod/tree/0ed4c096df75040145978d48c5307ef5678efed3), and `random_perturbations` by Barbara Verfürth (https://github.com/BarbaraV/gridlod-random-perturbations). The subfolder `gridlod` consists of code for PGLOD. The subfolder `random_perturbations` extend the PGLOD with the offline-online strategy for random defects for the source problem. The subfolder `eigen_problem` extends this offline-online strategy for the eigenvalue problem with random defects. It further contains the code for an alternate online-offline strategy. The files in the `eigen_problem` were written by Dilini Kolombage.
 
 ## Setup
 
 This setup works with a Ubuntu system. The following packages are required (tested versions):
- - python (v3.8.5)
- - numpy (v1.17.4)
- - scipy (v1.3.3)
- - scikit-sparse (v0.4.4) 
- - matplotlib (v3.1.2)
+ - python (v3.9.2)
+ - numpy (v1.24.2)
+ - scipy (v1.10.1)
+ - scikit-sparse (v0.4.8) 
+ - matplotlib (v3.7.1)
  
 Note that some additional requirements might be necessary for the scikit-sparse installation. For more informations please check https://scikit-sparse.readthedocs.io/en/latest/overview.html.
 
-Please see also the README of the `gridlod` submodule for required packages and setup.
-After cloning this repo with git, initialize the submodule via
-
-```
-git submodule update --init --recursive
-```
-
-Now, build and activate a python3 virtual environment with
+Please see also the README of the `gridlod` module for required packages and setup.
+First clone this repo with git. Then, build and activate a python3 virtual environment with
 
 ```
 virtualenv -p python3 venv3
@@ -50,9 +44,8 @@ First of all, change into the correct folder eigen_problem
 ```
 cd eigen_problem
 ```
-Since the some files in eigen_problem folder requires access to the files in random_perturbations folder, the following command with the correct path to the random_perturbation folder might be necessary. 
-`sys.path.insert(0, 'path to random_perturbations')`  e.g. sys.path.insert(0, '/home/kolombag/Documents/gridlod-random-perturbations/random_perturbations')
-
+Since some files in eigen_problem folder requires access to the files in random_perturbations folder, the following command with the correct path to the random_perturbation folder might be necessary. 
+`sys.path.insert(0, 'path to random_perturbations')` 
 
 Reproduction of the experiments consists of two steps: (i) generating the data and/or (ii) visualization. 
 Disclaimer! The re-generation of these experiments may take quite a while. A quick visualization is given in jupiter notebooks (.iypnb) via already stored data. 
