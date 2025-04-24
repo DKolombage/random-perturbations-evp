@@ -1,8 +1,10 @@
 import numpy as np
 import time
 
-from gridlod import interp, lod
-import build_coefficient, lod_periodic, indicator
+from gridlod.gridlod import interp, lod
+from random_perturbations import build_coefficient
+from random_perturbations import lod_periodic
+from random_perturbations import indicator
 
 
 def computeCSI_offline(world, NepsilonElement, k, boundaryConditions, model, correctors=False):

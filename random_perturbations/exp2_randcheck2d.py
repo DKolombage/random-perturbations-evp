@@ -2,8 +2,8 @@ import numpy as np
 import scipy.io as sio
 import time
 
-from gridlod.world import World
-from gridlod import util, fem, lod, interp
+from gridlod.gridlod.world import World
+from gridlod.gridlod import util, fem, lod, interp
 import algorithms, build_coefficient,lod_periodic
 
 NFine = np.array([256, 256])

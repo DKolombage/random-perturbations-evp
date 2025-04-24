@@ -1,11 +1,15 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 import numpy as np
 import scipy.io as sio
 import scipy.sparse.linalg as ln
-from gridlod.world import World
-from gridlod import util, fem, lod, interp, world
-import sys
-sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
-import build_coefficient, lod_periodic
+from gridlod.gridlod.world import World
+from gridlod.gridlod import util, fem, lod, interp, world
+from random_perturbations import build_coefficient, lod_periodic
 import math
 
 # 1D Exact eigenvalue solver for constant coefficient eigenvalue problem
@@ -17,12 +21,12 @@ def Exact_EigenSolver(Neigen):
         else: 
             eig = ((i-1)**2)*math.pi**2
         eigenvalues.append(eig)
-    return eigenvalues[2::]  
+    return eigenvalues[2::]       
 
 
 # FEM solver 1D and 2D
-def FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, model, save_file=True): 
-        NpFine = np.prod(NFine+1)     # Number of "fine-nodes" on τ_h mesh in each direction (1-D array: [x_h, y_h, z_h])
+def FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, model, save_file=True):
+        NpFine = np.prod(NFine+1)    
         NpCoarse = np.prod(NCoarse+1) 
         dim = np.size(NFine)
         
@@ -43,39 +47,40 @@ def FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon
             p= pList[ii]
             for N in range(NSamples):
                 if model['name'] == 'check':
-                      aPert = build_coefficient.build_randomcheckerboard(Nepsilon,NFine,alpha,beta,p)
+                        aPert = build_coefficient.build_randomcheckerboard(Nepsilon,NFine,alpha,beta,p)
                 elif model['name'] == 'incl':
-                      left = model['left']
-                      right = model['right']
-                      aPert = build_coefficient.build_inclusions_defect_2d(NFine,Nepsilon,alpha,beta,left,right,p)
+                        left = model['left']
+                        right = model['right']
+                        aPert = build_coefficient.build_inclusions_defect_2d(NFine,Nepsilon,alpha,beta,left,right,p)
                 elif model['name'] == 'inclvalue':
-                      left = model['left']
-                      right = model['right']
-                      value = model['defval']
-                      aPert = build_coefficient.build_inclusions_defect_2d(NFine,Nepsilon,alpha,beta,left,right,p, value)
+                        left = model['left']
+                        right = model['right']
+                        value = model['defval']
+                        aPert = build_coefficient.build_inclusions_defect_2d(NFine,Nepsilon,alpha,beta,left,right,p, value)
                 elif model['name'] in ['inclfill', 'inclshift', 'inclLshape']:
-                      aPert = build_coefficient.build_inclusions_change_2d(NFine,Nepsilon,alpha,beta,left,right,p,model)
+                        aPert = build_coefficient.build_inclusions_change_2d(NFine,Nepsilon,alpha,beta,left,right,p,model)
                 else:
-                      NotImplementedError('other models not available!')
-                      
+                        NotImplementedError('other models not available!')
+
                 MFEM = fem.assemblePatchMatrix(world.NWorldFine, world.MLocFine) 
                 KFEM = fem.assemblePatchMatrix(world.NWorldFine, world.ALocFine, aPert) 
-     
+                #print('M \n', MFEM)
+                #print('K \n', KFEM)
+                #print('coeff \n', aPert)
 
                 if dim == 2:
                         KFEM.tolil()
                         KFEM[np.arange(0, NFine[1]*(NFine[0]+1)+1, NFine[0]+1),:] \
-                                += KFEM[np.arange(NFine[0], np.prod(NFine+1), NFine[0]+1),:]         # Wrap the LHS-RHS-row values together at LHS-mesh boundary points
+                                += KFEM[np.arange(NFine[0], np.prod(NFine+1), NFine[0]+1),:]         
                         KFEM[:, np.arange(0, NFine[1] * (NFine[0] + 1) + 1, NFine[0] + 1)] \
-                                += KFEM[:, np.arange(NFine[0], np.prod(NFine + 1), NFine[0] + 1)]    # Wrap the LHS-RHS-column values together at LHS-mesh boundary points
-                        KFEM[np.arange(NFine[0]+1), :] += KFEM[np.arange(NFine[1]*(NFine[0]+1), np.prod(NFine+1)), :]          # Wrap the Bottom - top row-values together at BOTTOM-mesh boundary points 
-                        KFEM[:, np.arange(NFine[0] + 1)] += KFEM[:, np.arange(NFine[1] * (NFine[0] + 1), np.prod(NFine + 1))]  # Wrap the Bottom - top column-values together at BOTTOM-mesh boundary points
+                                += KFEM[:, np.arange(NFine[0], np.prod(NFine + 1), NFine[0] + 1)]   
+                        KFEM[np.arange(NFine[0]+1), :] += KFEM[np.arange(NFine[1]*(NFine[0]+1), np.prod(NFine+1)), :]          
+                        KFEM[:, np.arange(NFine[0] + 1)] += KFEM[:, np.arange(NFine[1] * (NFine[0] + 1), np.prod(NFine + 1))]  
                         KFEM.tocsc()
 
                         fixed_DoF = np.concatenate((np.arange(NFine[1] * (NFine[0] + 1), NpFine), 
                                                         np.arange(NFine[0], NpFine - 1, NFine[0] + 1)))    # All the abandoning boundary points
-                        
-                        free_DoF = np.setdiff1d(np.arange(NpFine), fixed_DoF)  # Rest of the nodal indices 
+                        free_DoF = np.setdiff1d(np.arange(NpFine), fixed_DoF)  
                         KFEM_Free_DoF = KFEM[free_DoF][:, free_DoF]         # Array after BC applied
 
                         MFEM.tolil()
@@ -100,6 +105,7 @@ def FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon
                         MFEM.tolil()
                         MFEM[np.arange(NFine[0], np.prod(NFine+1), NFine[0]+1),:] += MFEM[np.array([0])]
                         MFEM[:, np.array([0])] += MFEM[:, np.arange(NFine[0], np.prod(NFine + 1), NFine[0] + 1)]
+                        #MFEM[0] += MFEM[-1]
                         MFEM.tocsc() 
 
                         fixed_DoF = np.arange(NFine[0], np.prod(NFine + 1), NFine[0] + 1)
@@ -107,7 +113,8 @@ def FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon
                         MFEM_Free_DoF = MFEM[1:,:][:,free_DoF]
 
                 # Compute for eigen values
-                evalsFEM= ln.eigsh(KFEM_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.05, which='LM', return_eigenvectors = False, tol=1E-2) # v0, (Stiff_Matrix, Number of e.values needed, Mass_Matrix), 
+                evalsFEM= ln.eigsh(KFEM_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.05, which='LM', return_eigenvectors = False, tol=1E-4) 
+                        
                 FEM_λ1[ii, N] = evalsFEM[1]
                 FEM_λ2[ii, N] = evalsFEM[2]
         if save_file:

@@ -1,23 +1,27 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 import numpy as np
 import scipy.io as sio
 import scipy.sparse.linalg as ln
 import time
-from gridlod.world import World
-from gridlod import util, fem, lod, interp
+from gridlod.gridlod.world import World
+from gridlod.gridlod import util, fem, lod, interp
 
-from gridlod import interp, lod
-import sys
-sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
-import build_coefficient, lod_periodic, indicator, algorithms_s,algorithms
+from random_perturbations import build_coefficient, lod_periodic, indicator, algorithms
+from eigen_problem import algorithms_s 
 
 def KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, root, save_file=True):
-    NpFine = np.prod(NFine+1)     # Number of "fine-nodes" on τ_h mesh in each direction (1-D array: [x_h, y_h, z_h])
+    NpFine = np.prod(NFine+1)     
     NpCoarse = np.prod(NCoarse+1) 
     dim = np.size(NFine)
     
     boundaryConditions = None
     percentage_comp = 0.15
-    np.random.seed(123)
+    np.random.seed(1)
 
     NCoarseElement = NFine // NCoarse
     world = World(NCoarse, NCoarseElement, boundaryConditions)
@@ -32,7 +36,7 @@ def KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, 
         return patch, correctorsList, csi.Kmsij, csi
     
     aRefList, KmsijList, muTPrimeList, timeBasis, timeMatrixList = algorithms.computeCSI_offline(world, Nepsilon // NCoarse,k,boundaryConditions,model,correctors=False)  
-    #print(aRefList)                                                           
+                                                           
     aRef = np.copy(aRefList[-1])
     KmsijRef = np.copy(KmsijList[-1])
     muTPrimeRef = muTPrimeList[-1]
@@ -67,18 +71,17 @@ def KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, 
             else:
                 NotImplementedError('other models not available!')
 
-            #combined LOD
+            #OO-LOD
             KFullcomb, _,_ = algorithms_s.compute_combined_MsStiffness(world,Nepsilon,aPert,aRefList,KmsijList,muTPrimeList,k,
                                                                    model,s, compute_indicator=False)
-        
-            # FEM Mass Matrix
+
             MFEM = fem.assemblePatchMatrix(world.NWorldCoarse, world.MLocCoarse) 
 
             if dim == 2:
 
                 fixed_DoF = np.concatenate((np.arange(NCoarse[1] * (NCoarse[0] + 1), NpCoarse), 
-                                                np.arange(NCoarse[0], NpCoarse - 1, NCoarse[0] + 1)))    # All the abandoning boundary points
-                free_DoF = np.setdiff1d(np.arange(NpCoarse), fixed_DoF)  # Rest of the nodal indices 
+                                                np.arange(NCoarse[0], NpCoarse - 1, NCoarse[0] + 1)))    
+                free_DoF = np.setdiff1d(np.arange(NpCoarse), fixed_DoF)  
 
                 KOOLOD_Free_DoF = KFullcomb[free_DoF][:, free_DoF]  
 
@@ -108,7 +111,9 @@ def KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, 
 
                 MFEM_Free_DoF = MFEM[free_DoF][:, free_DoF]
 
-            evals, evecs = ln.eigsh(KOOLOD_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.005, which='LM', return_eigenvectors = True, tol=1E-4) # v0, (Stiff_Matrix, Number of e.values needed, Mass_Matrix), 
+            #evals, evecs = ln.eigsh(KOOLOD_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.005, which='LM', return_eigenvectors = True, tol=1E-4) 
+            evals, evecs = ln.eigs(KOOLOD_Free_DoF,Neigen, MFEM_Free_DoF,sigma=0.005, which='LM', tol=1e-4)
+            evals = np.real(evals)
             KOLOD_λ1[ii, N] = evals[1]
             KOLOD_λ2[ii, N] = evals[2]
         sList.append(np.copy(s))
@@ -118,5 +123,5 @@ def KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, 
             sio.savemat(root + 's_values'  + '.mat', {'s_list': sList})
     print("S_list:\n") 
     print(sList)
-    return KOLOD_λ1, KOLOD_λ2 #, print(ln.eigsh(KOOLOD_pert_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.005, which='LM', return_eigenvectors = True, tol=1E-4) )
+    return KOLOD_λ1, KOLOD_λ2 
 

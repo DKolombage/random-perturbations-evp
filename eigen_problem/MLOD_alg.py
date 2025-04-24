@@ -1,11 +1,16 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 import numpy as np
 import scipy.io as sio
 import scipy.sparse.linalg as ln
-from gridlod.world import World
-from gridlod import util, fem, lod, interp, world
-import sys
-sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
-import build_coefficient, lod_periodic
+from gridlod.gridlod.world import World
+from gridlod.gridlod import util, fem, lod, interp, world
+
+from random_perturbations import build_coefficient, lod_periodic
                    
 
 def KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=True):
@@ -16,7 +21,7 @@ def KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pL
         
         boundaryConditions = None
         percentage_comp = 0.15
-        np.random.seed(123)
+        np.random.seed(1)
 
         NCoarseElement = NFine // NCoarse
         world = World(NCoarse, NCoarseElement, boundaryConditions)
@@ -102,7 +107,9 @@ def KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pL
 
                                 MFEM_Free_DoF = MFEM[free_DoF][:, free_DoF]
 
-                        evals, evecs = ln.eigsh(KLOD_Free_DoF , Neigen,  MFEM_Free_DoF, sigma =0.005, which='LM', return_eigenvectors = True, tol=1E-2) # v0, (Stiff_Matrix, Number of e.values needed, Mass_Matrix), 
+                        evals, evecs = ln.eigs(KLOD_Free_DoF,Neigen, MFEM_Free_DoF, sigma =0.005, which='LM',return_eigenvectors = True, tol=1e-4)
+                        evals = np.real(evals)
+                        
                         KLOD_λ1[ii, N] = evals[1]
                         KLOD_λ2[ii, N] = evals[2]
         if save_file:

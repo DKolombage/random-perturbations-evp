@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.io as sio
 
-from gridlod.world import World
-from gridlod import util, fem, lod, interp
+from gridlod.gridlod.world import World
+from gridlod.gridlod import util, fem, lod, interp
 import algorithms, build_coefficient, lod_periodic
 
 def computeKmsij(TInd, a, IPatch):

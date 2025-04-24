@@ -1,12 +1,19 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 import numpy as np
 import time
 
 from gridlod import interp, lod
-import sys
-sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
-import build_coefficient, lod_periodic, indicator
+#import sys
+#sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
+from random_perturbations import build_coefficient
+from random_perturbations import indicator
+from random_perturbations import lod_periodic
 
-# The following code is adapted from the sum constraint one algorithm from `algorithms.py` file in `random_perturbations` folder for the alternate method with sum constrain-s.
 
 def computeCSI_offline(world, NepsilonElement, k, boundaryConditions, model, correctors=False):
     dim = np.size(world.NWorldFine)
@@ -192,7 +199,7 @@ def compute_perturbed_MsStiffness(world,aPert, aRef, KmsijRef, muTPrimeRef,k, up
     patchT = list(map(computePatch, range(world.NtCoarse)))
     dim = np.size(world.NWorldFine)
     if dim == 2:
-        middle = world.NWorldCoarse[1] // 2 * world.NWorldCoarse[0] + world.NWorldCoarse[0] // 2 #2d!!!
+        middle = world.NWorldCoarse[1] // 2 * world.NWorldCoarse[0] + world.NWorldCoarse[0] // 2 
     elif dim == 1:
         middle = world.NWorldCoarse[0] // 2
     patchRef = lod_periodic.PatchPeriodic(world, k, middle)

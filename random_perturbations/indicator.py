@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.linalg
-from gridlod import fem, util
+from gridlod.gridlod import fem, util
 
 def computeErrorIndicatorFineMultiple(patch, correctorsList, aRefList, mu, aPatchNew=None):
     ''' Compute the fine error indicator e(T) for given vector mu.

@@ -1,5 +1,6 @@
+
 import numpy as np
-from gridlod import util
+from gridlod.gridlod import util
 
 def build_randomcheckerboard(Nepsilon, NFine, alpha, beta, p):
     # builds a random checkerboard coefficient with spectral bounds alpha and beta,
@@ -44,6 +45,7 @@ def build_checkerboardbasis(NPatch, NepsilonElement, NFineElement, alpha, beta):
         #find out which indices on fine grid correspond to element ii on epsilon grid
         elementIndex = util.convertpLinearIndexToCoordIndex(Nepsilon-1, ii)[:]
         indices = util.extractElementFine(Nepsilon, NFineElement//NepsilonElement, elementIndex) 
+        coeff[indices] = beta
         return coeff
 
     checkerboardbasis = list(map(checkerboardI, range(Ntepsilon))) #Di: coeff value (alpha or beta) for each ε-block on the whole domain: A_1, ...A_(Ntε)

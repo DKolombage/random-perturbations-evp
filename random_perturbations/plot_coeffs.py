@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from gridlod import util
+from gridlod.gridlod import util
 from gridlod.world import World
 import build_coefficient, lod_periodic
 
@@ -19,7 +19,7 @@ fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
 apertGrid = aPert.reshape(NFine, order='C')
-im1 = ax1.imshow(apertGrid, origin='lower_left', extent=(0, 1, 0, 1), cmap='Greys')
+im1 = ax1.imshow(apertGrid, origin='lower', extent=(0, 1, 0, 1), cmap='Greys')
 fig.colorbar(im1, ax=ax1)
 plt.show()
 
@@ -36,7 +36,7 @@ fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
 
 apertGrid = aPert.reshape(NFine, order='C')
-im1 = ax1.imshow(apertGrid, origin='lower_left', extent=(0, 1, 0, 1), cmap='Greys')
+im1 = ax1.imshow(apertGrid, origin='lower', extent=(0, 1, 0, 1), cmap='Greys')
 fig.colorbar(im1, ax=ax1)
 plt.show()
 
@@ -72,7 +72,7 @@ for ii in range(6):
     mycmap = plt.cm.get_cmap('Greys')
     norm = matplotlib.colors.BoundaryNorm(bounds, mycmap.N)
     apertGrid = aPertList[ii].reshape(NFine, order='C')
-    im = ax.imshow(apertGrid, origin='lower_left', extent=(0, 1, 0, 1), cmap=mycmap, norm=norm)
+    im = ax.imshow(apertGrid, origin='lower', extent=(0, 1, 0, 1), cmap=mycmap, norm=norm)
 
 plt.show()
 
@@ -98,7 +98,7 @@ fig = plt.figure()
 for ii in range(4):
     ax = fig.add_subplot(2, 2, ii+1)
     apertGrid = aRefList_rand[-1+ii].reshape(patch.NPatchFine, order='C')
-    im = ax.imshow(apertGrid, origin='lower_left',
+    im = ax.imshow(apertGrid, origin='lower',
                     extent=(xpFine[:,0].min(), xpFine[:,0].max(), xpFine[:,1].min(), xpFine[:,1].max()), cmap='Greys')
 plt.show()
 
@@ -109,6 +109,6 @@ fig = plt.figure()
 for ii in range(4):
     ax = fig.add_subplot(2, 2, ii+1)
     apertGrid = aRefList_incl[-1+ii].reshape(patch.NPatchFine, order='C')
-    im = ax.imshow(apertGrid, origin='lower_left',
+    im = ax.imshow(apertGrid, origin='lower',
                    extent=(xpFine[:,0].min(), xpFine[:,0].max(), xpFine[:,1].min(), xpFine[:,1].max()), cmap='Greys')
 plt.show()

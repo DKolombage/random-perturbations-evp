@@ -1,4 +1,9 @@
-from MLOD_alg import *
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 from Reference_Solvers import *
 import math
 from numpy import *
@@ -6,11 +11,12 @@ from numpy.linalg import norm
 import matplotlib.pyplot as plt
 from mpltools import annotation
 from offline_online_alg import *
+from MLOD_alg import *
 
 
 def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, model, solver , reference_solver="FEM", save_files = True, root=None):
 
-    Niter = 4
+    Niter = 3
     NC_list = []
     rmserr_p_λ1 = []
     rmserr_p_λ2=[]
@@ -21,7 +27,7 @@ def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, mode
         if reference_solver == "FEM" and solver == "KOOLOD":
             K_λ1, K_λ2 = KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False) #KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, save_file=False)
             M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, model, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_FEM = (K_λ1 + K_λ2)/2
             Mean_lambda_KOOLOD = (M_λ1 + M_λ2)/2
@@ -31,7 +37,7 @@ def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, mode
         elif reference_solver == "FEM" and solver == "LOD":
             K_λ1, K_λ2 = KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
             M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, model, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_FEM = (K_λ1 + K_λ2)/2
             Mean_lambda_LOD = (M_λ1 + M_λ2)/2
@@ -40,8 +46,8 @@ def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, mode
 
         elif reference_solver == "LOD" and solver == "KOOLOD":
             K_λ1, K_λ2 = KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
-            M_λ1, M_λ2 =  KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            M_λ1, M_λ2 =  KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_LOD = (K_λ1 + K_λ2)/2
             Mean_lambda_KOOLOD = (M_λ1 + M_λ2)/2
@@ -51,7 +57,7 @@ def errors(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, mode
         elif reference_solver == "exact" and solver == "LOD":
             Exact_λ = Exact_EigenSolver(Neigen)
             K_λ1, K_λ2 = KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-Exact_λ)  # p in rows and Nsamples in columns
+            absErrorList_λ1 = abs(K_λ1-Exact_λ) 
             absErrorList_λ2 = abs(K_λ2-Exact_λ)
         else:
             print("Unrecognized reference solver!")
@@ -100,8 +106,8 @@ def convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta,
         NCoarse *= 2
         if reference_solver == "FEM" and solver == "KOOLOD":
             K_λ1, K_λ2 = KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False) #KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, save_file=False)
-            M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon,model, save_file=False)
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_FEM = (K_λ1 + K_λ2)/2
             Mean_lambda_KOOLOD = (M_λ1 + M_λ2)/2
@@ -109,8 +115,8 @@ def convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta,
 
         elif reference_solver == "FEM" and solver == "LOD":
             K_λ1, K_λ2 = KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
-            M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            M_λ1, M_λ2 =  FEM_EigenSolver(Neigen, NSamples, pList,alpha,beta, NCoarse, NFine, Nepsilon, model, save_file=False)
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_FEM = (K_λ1 + K_λ2)/2
             Mean_lambda_LOD = (M_λ1 + M_λ2)/2
@@ -118,8 +124,8 @@ def convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta,
 
         elif reference_solver == "LOD" and solver == "KOOLOD":
             K_λ1, K_λ2 = KOOLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
-            M_λ1, M_λ2 =  KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-M_λ1)  # p in rows and Nsamples in columns
+            M_λ1, M_λ2 =  KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
+            absErrorList_λ1 = abs(K_λ1-M_λ1)  
             absErrorList_λ2 = abs(K_λ2-M_λ2)
             Mean_lambda_LOD = (K_λ1 + K_λ2)/2
             Mean_lambda_KOOLOD = (M_λ1 + M_λ2)/2
@@ -128,7 +134,7 @@ def convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta,
         elif reference_solver == "exact" and solver == "LOD":
             Exact_λ = Exact_EigenSolver(Neigen)
             K_λ1, K_λ2 = KLOD_MFEM_EigenSolver(NCoarse, NFine, Nepsilon, k, alpha, beta, NSamples, pList, Neigen, model, save_file=False)
-            absErrorList_λ1 = abs(K_λ1-Exact_λ)  # p in rows and Nsamples in columns
+            absErrorList_λ1 = abs(K_λ1-Exact_λ)  
             absErrorList_λ2 = abs(K_λ2-Exact_λ)
         else:
             print("Unrecognized reference solver!")
@@ -175,7 +181,8 @@ def convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta,
             #for j in range(1, n+1):
             #    ax1.loglog(NC_list, err_Lam1[:, i]*0.5**(i*j), lw = 0.5, color="red")
             else:
-                ax1.loglog(NC_list, [err1[0,0]*0.5**(i*2) for i in range(len(pList))], lw = 1.0, color="red",  linestyle='dashed') # order 2 reference line
+                ax1.loglog(NC_list, [err1[0,0]*0.5**(i*2) for i in range(len(pList))], lw = 1.0, color="red",  linestyle='dashed')
+                #ax1.loglog(NC_list, [err_Lam1[0,0]*0.5**(i*1) for i in range(len(pList))], lw = 1.0, color="blue",  linestyle='dashed')   # order 1 reference line
                 ax2.loglog(NC_list, [err2[0,0]*0.5**(i*2) for i in range(len(pList))], lw = 1.0, color="red",  linestyle='dashed')
                 ax3.loglog(NC_list, [err[0,0]*0.5**(i*2) for i in range(len(pList))], lw = 1.0, color="red",  linestyle='dashed')
         ax2.legend()

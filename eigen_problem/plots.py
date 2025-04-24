@@ -1,3 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 from MLOD_alg import *
 from Reference_Solvers import *
 from convergence import *
@@ -7,11 +13,9 @@ import matplotlib.pyplot as plt
 from mpltools import annotation
 import numpy as np
 import matplotlib
-from gridlod import util
-from gridlod.world import World
-import sys
-sys.path.insert(0, '/.../random-perturbations-evp/random_perturbations')
-import build_coefficient, lod_periodic
+from gridlod.gridlod import util
+from gridlod.gridlod.world import World
+from random_perturbations import build_coefficient, lod_periodic
 
 np.random.seed(1)
 
@@ -23,8 +27,8 @@ def plots_cvg(root, H_Convergence=False, p_Convergence=True, dim=2):
     NC_list = pNC['NC_list'][0]
     print("hplot", NC_list)
     if H_Convergence:
-        ax1=plt.figure().add_subplot()
-        ax2=plt.figure().add_subplot()
+        #ax1=plt.figure().add_subplot()
+        #ax2=plt.figure().add_subplot()
         ax3=plt.figure().add_subplot()
         data_array = sio.loadmat(root + '_RMSErr_H' + '.mat')
         err_Lam1 = data_array['rmserr_lamb1']
@@ -32,30 +36,30 @@ def plots_cvg(root, H_Convergence=False, p_Convergence=True, dim=2):
         err_Lam = data_array['rmserr_lamb']
         for i in range(len(pList)):
             labelplain = 'p={' + str(pList[i]) + '}'
-            ax1.loglog(NC_list, err_Lam1[:, i], label=r'${}$'.format(labelplain), marker='>')
-            ax2.loglog(NC_list, err_Lam2[:,i], label=r'${}$'.format(labelplain), marker='<')
+            #ax1.loglog(NC_list, err_Lam1[:, i], label=r'${}$'.format(labelplain), marker='>')
+            #ax2.loglog(NC_list, err_Lam2[:,i], label=r'${}$'.format(labelplain), marker='<')
             ax3.loglog(NC_list, err_Lam[:,i], label=r'${}$'.format(labelplain), marker='<')
-        ax1.loglog(NC_list, [err_Lam1[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
-        ax2.loglog(NC_list, [err_Lam2[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
-        ax3.loglog(NC_list, [err_Lam[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
-        ax1.loglog(NC_list, [err_Lam1[0,0]*0.5**(j*2)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^2)$')
-        ax2.loglog(NC_list, [err_Lam2[0,0]*0.5**(j*2)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^2)$')
+        #ax1.loglog(NC_list, [err_Lam1[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
+        #ax2.loglog(NC_list, [err_Lam2[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
+        #ax3.loglog(NC_list, [err_Lam[0,0]*0.5**(j*3)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^3)$')
+        #ax1.loglog(NC_list, [err_Lam1[0,0]*0.5**(j*2)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^2)$')
+        #ax2.loglog(NC_list, [err_Lam2[0,0]*0.5**(j*2)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^2)$')
         ax3.loglog(NC_list, [err_Lam[0,0]*0.5**(j*2)for j in range(len(NC_list))], lw = 1.0, color="black",  linestyle='dashed',label='$\mathscr{O}(H^2)$')
-        ax1.legend()
-        ax2.legend()
+        #ax1.legend()
+        #ax2.legend()
         ax3.legend()
-        ax1.set_xlabel('$H^{-1}$')
-        ax1.set_ylabel('Root Mean squard error of $λ_1$')
-        ax2.set_xlabel('$H^{-1}$')
-        ax2.set_ylabel('Root Mean squard error of $λ_2$')
+        #ax1.set_xlabel('$H^{-1}$')
+        #ax1.set_ylabel('root means square error of $λ_1$')
+        #ax2.set_xlabel('$H^{-1}$')
+        #ax2.set_ylabel('root means square error of $λ_2$')
         ax3.set_xlabel('$H^{-1}$')
-        ax3.set_ylabel('Root Mean squard error of $λ$')
+        ax3.set_ylabel('root means square error of $λ$')
         plt.show()
 
     if p_Convergence:
         fig = plt.figure()
-        ax4 = fig.add_subplot(1, 2, 1)
-        ax5 = fig.add_subplot(1, 2, 2)
+        #ax4 = fig.add_subplot(1, 2, 1)
+        #ax5 = fig.add_subplot(1, 2, 2)
         ax6=plt.figure().add_subplot()
 
         if dim == 1:
@@ -74,8 +78,8 @@ def plots_cvg(root, H_Convergence=False, p_Convergence=True, dim=2):
                     rms_λ2.append(np.sqrt(1. / NSamples * np.sum(Error_λ2[ii, :] ** 2)))
                     rms.append(np.sqrt(1. / NSamples * np.sum(Error[ii, :] ** 2)))
                 labelplain = 'H=2^{' + str(i) + '}'
-                ax4.plot(pList, rms_λ1, '-*', label=r'${}$'.format(labelplain))
-                ax5.plot(pList, rms_λ2, '-*', label=r'${}$'.format(labelplain))
+                #ax4.plot(pList, rms_λ1, '-*', label=r'${}$'.format(labelplain))
+                #ax5.plot(pList, rms_λ2, '-*', label=r'${}$'.format(labelplain))
                 ax6.plot(pList, rms, '-*', label=r'${}$'.format(labelplain))
                 i -= 1
         else:
@@ -94,17 +98,17 @@ def plots_cvg(root, H_Convergence=False, p_Convergence=True, dim=2):
                     rms_λ2.append(np.sqrt(1. / NSamples * np.sum(Error_λ2[ii, :] ** 2)))
                     rms.append(np.sqrt(1. / NSamples * np.sum(Error[ii, :] ** 2)))
                 labelplain = 'H=2^{' + str(i) + '}'
-                ax4.plot(pList, rms_λ1, '-*', label=r'${}$'.format(labelplain))
-                ax5.plot(pList, rms_λ2, '-*', label=r'${}$'.format(labelplain))
+                #ax4.plot(pList, rms_λ1, '-*', label=r'${}$'.format(labelplain))
+                #ax5.plot(pList, rms_λ2, '-*', label=r'${}$'.format(labelplain))
                 ax6.plot(pList, rms, '-*', label=r'${}$'.format(labelplain))
                 i -= 1
-        ax4.legend()
-        ax5.legend()
+        #ax4.legend()
+        #ax5.legend()
         ax6.legend()
-        ax4.set_xlabel('p')
-        ax4.set_ylabel('root means square error of $λ_1$')
-        ax5.set_xlabel('p')
-        ax5.set_ylabel('root means square error of $λ_2$')
+        #ax4.set_xlabel('p')
+        #ax4.set_ylabel('root means square error of $λ_1$')
+        #ax5.set_xlabel('p')
+        #ax5.set_ylabel('root means square error of $λ_2$')
         ax6.set_xlabel('p')
         ax6.set_ylabel('root means square error of $λ$')
         plt.show()
@@ -129,7 +133,7 @@ def plot_s_vs_unity_errors(root1, root2, p_cvg = True, H_cvg = False, relative =
             ax1.loglog(NC_list, su_diff[:,i], label=r'${}$'.format(labelplain), marker='+')
         ax1.legend()
         ax1.set_xlabel('$H^{-1}$')
-        ax1.set_ylabel('Relative error between uty_error vs s_error$')
+        ax1.set_ylabel('relative error between uty_error vs s_error$')
     if H_cvg:
         ax2=plt.figure().add_subplot()
         for i in range(0,3):
@@ -139,7 +143,7 @@ def plot_s_vs_unity_errors(root1, root2, p_cvg = True, H_cvg = False, relative =
             ax2.loglog(NC_list, err_Lam_s[:,i], label=r'${}$'.format(labelplain2), marker ='<')
         ax2.legend()
         ax2.set_xlabel('$H^{-1}$')
-        ax2.set_ylabel('Root Mean squard error of $λ_2$')
+        ax2.set_ylabel('root means square error of $λ_2$')
     
     if p_cvg:
         fig = plt.figure()
@@ -189,18 +193,18 @@ def plot_s_vs_unity_errors(root1, root2, p_cvg = True, H_cvg = False, relative =
                 ax5.plot(pList, rms_λ2_1, 'm--*', label=r'${}$'.format(labelplain3))
                 ax5.plot(pList, rms_λ2_s, 'm-+', label=r'${}$'.format(labelplain4))
            # i -= 1                                                                 
-        ax4.legend()
-        ax5.legend()
+        #ax4.legend()
+        #ax5.legend()
         ax6.legend()
-        plt.xticks(np.arange(0, 0.21, 0.05), minor=True)   # set minor ticks on x-axis
-        plt.yticks(np.arange(0, 0.61, 0.02), minor=True)   # set minor ticks on y-axis
-        plt.tick_params(which='minor', length=0) 
-        plt.grid()
-        plt.grid(which='minor', alpha=0.3)  
-        ax4.set_xlabel('p')
-        ax4.set_ylabel('root means square error of $λ_1$')
-        ax5.set_xlabel('p')
-        ax5.set_ylabel('root means square error of $λ_2$')
+        #plt.xticks(np.arange(0, 0.21, 0.05), minor=True)   # set minor ticks on x-axis
+        #plt.yticks(np.arange(0, 0.61, 0.02), minor=True)   # set minor ticks on y-axis
+        #plt.tick_params(which='minor', length=0) 
+        #plt.grid()
+        #plt.grid(which='minor', alpha=0.3)  
+        #ax4.set_xlabel('p')
+        #ax4.set_ylabel('root means square error of $λ_1$')
+        #ax5.set_xlabel('p')
+        #ax5.set_ylabel('root means square error of $λ_2$')
         ax6.set_xlabel('p')
         ax6.set_ylabel('root means square error of $λ$')
         fig.savefig("comparison.svg") #, dpi=150
@@ -264,7 +268,7 @@ def plots_coeffs(Nepsilon, NFine, alpha, beta, pList, type):
 
             plt.show()
 
-# Offline coefficients plots
+# Offline coefficients - Random checkerboard
 def plot_offline_coeff(Nepsilon, NFine, NCoarse, k, alpha, beta, type):
     NCoarseElement = NFine // NCoarse
     world = World(NCoarse, NCoarseElement, None)
@@ -290,7 +294,7 @@ def plot_offline_coeff(Nepsilon, NFine, NCoarse, k, alpha, beta, type):
         aRefList_incl = build_coefficient.build_inclusionbasis_2d(patch.NPatchCoarse, Nepsilon // NCoarse, world.NCoarseElement, alpha, beta, incl_bl, incl_tr)
         fig = plt.figure()
         for ii in range(4):
-            ax = fig.add_subplot(2, 2, ii+1)
+            ax = fig.add_subplot(1, 4, ii+1)
             apertGrid = aRefList_incl[-1+ii].reshape(patch.NPatchFine, order='C')
             im = ax.imshow(apertGrid, origin='lower',
                         extent=(xpFine[:,0].min(), xpFine[:,0].max(), xpFine[:,1].min(), xpFine[:,1].max()), cmap='Greens')

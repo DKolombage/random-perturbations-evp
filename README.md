@@ -17,38 +17,41 @@ This setup works with a Ubuntu system. The following packages are required (test
  - scipy (v1.10.1)
  - scikit-sparse (v0.4.8) 
  - matplotlib (v3.7.1)
+ - mpltools (v0.2.0)
  
 Note that some additional requirements might be necessary for the scikit-sparse installation. For more informations please check https://scikit-sparse.readthedocs.io/en/latest/overview.html.
 
-Please see also the README of the `gridlod` module for required packages and setup.
+Please see the README of the `gridlod` module for required packages and setup. 
+
+Please see also READOME of `random-perturbations` for further instructions on testing the offline-online strategy for the source problem experiments. Note that they have done the submodule initiation differently to ours and make sure the path setup is correct if you need to run the python scripts for experiments, i.e.(exp1-exp4).py files.
+
 First clone this repo with git. Then, build and activate a python3 virtual environment with
 
 ```
-virtualenv -p python3 venv3
+python3 -m venv venv3
 . venv3/bin/activate
 ```
 
-and execute the following commands
+Now install all the required python packages listed above. 
 
-```
-echo $PWD/gridlod/ > $(python -c 'from distutils.sysconfig import get_python_lib; print(get_python_lib())')/gridlod.pth
-```
-Now you can use every file from the subfolders in the virtualenv. Install all the required python packages for gridlod. 
+### Visualization of results
+All data from the experiments are available at the `All_Data` folder as .mat-files and can be easily visualize without generating the data. These visualizations are shownen in jupiter notebooks and each file is named by the same corresponding file name as described below. To run the notebooks, you may first need to change the jupiter kernel into the virtual environment created above.
 
-Please see READOME of `random-perturbations` for further instructions on testing the offline-online strategy for the source problem experiments.
+Apart from the visualization of the errors, you can also reproduce the coefficient visualizations from the paper (Figures 1 and 2). These are given as a part of the notebooks 
+``E2_OLOD_2D_RC.ipynb`` and ``E3_OLOD_2D_RE.ipynb``
+These images are completely independent from the other experiments.
 
 ## Reproduction of experiments
 
-First of all, change into the correct folder eigen_problem
+You could reproduce the data sets for the results given in the manuscript. When reproducing a certain experiment or image from the paper, please make sure to change the `plots.py` file according to the correct orders either (e.g. $H^{-4}$ and $H^{-5} or $H^{-5}$ and $H^{-6}$) as considered in the paper.
+
+Disclaimer! The re-generation of these experiments may take quite a while. While the 1D-experiments are quite fast, it took us several hours to produce 2D-experimental results. 
+
+Change into the correct folder 'eigen_problem':
 
 ```
 cd eigen_problem
 ```
-Since some files in eigen_problem folder requires access to the files in random_perturbations folder, the following command with the correct path to the random_perturbation folder might be necessary. 
-`sys.path.insert(0, 'path to random_perturbations')` 
-
-Reproduction of the experiments consists of two steps: (i) generating the data and/or (ii) visualization. 
-Disclaimer! The re-generation of these experiments may take quite a while. A quick visualization is given in jupiter notebooks (.iypnb) via already stored data. 
 
 ### Generating the data
 To reproduce the data of the experiments run
@@ -82,13 +85,6 @@ python3 E5_2D_Check_s_val.py
 ```
 
 for the experiments of Section 5.2. 
-
-### Visualization
-All dta from the experiments are available at the `All_Data` folder as .mat-files and can be easily visualize without generating the data. These visualizations are shownen in jupiter notebooks and each file is named by the same corresponding file name as described above.
-
-Apart from the visualization of the errors, you can also reproduce the coefficient visualizations from the paper (Figures 1 and 2). These are given as a part of the notebooks 
-``E2_OLOD_2D_RC.ipynb`` and ``E3_OLOD_2D_RE.py``
-These images is completely independent from the other experiments.
 
 ## Note
 This code is meant to illustrate the numerical methods presented in the paper. It is not optimized in any way, in particular no parallelization is implemented. 

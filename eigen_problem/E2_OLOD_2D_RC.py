@@ -1,3 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from setup_path import add_repo_paths
+add_repo_paths()
+
 import numpy as np
 import scipy.io as sio
 import time
@@ -15,8 +21,8 @@ NSamples = 200
 dim = np.size(NFine)
 Neigen = 3
 boundaryConditions = None
-alpha = 0.1
-beta = 1.
+alpha = 0.01
+beta = 0.1
 pList = [0.02, 0.04, 0.06, 0.08, 0.1]
 np.random.seed(1)
 model ={'name': 'check', 'alpha': alpha, 'beta': beta}
@@ -24,4 +30,4 @@ root = 'All_Data/OO_2D_randcheck/test_folder/' #provide a path/folder for the da
 
 convergence(Neigen, NCoarse, NFine, Nepsilon, k, NSamples, pList,alpha,beta, model, solver = "KOOLOD", reference_solver="FEM", save_files = True, plot=False, root=root)
 
-plots_cvg(root=root, H_Convergence=True, p_Convergence=True)
+plots_cvg(root=root, H_Convergence=True, p_Convergence=True,dim=2)

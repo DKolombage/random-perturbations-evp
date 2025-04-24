@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.sparse as sparse
 
-from gridlod import fem, util
+from gridlod.gridlod import fem, util
 
 class PatchPeriodic:
     ''' Patch object in periodic setting. Adapted from non-periodic setting in gridlod.world.Patch
